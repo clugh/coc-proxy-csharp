@@ -19,23 +19,23 @@ namespace coc_proxy_csharp
         {
             try
             {
-                IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Any, this.port);
+                IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Any, port);
                 Socket listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 listener.Bind(localEndPoint);
                 listener.Listen(100);
 
-                Console.WriteLine("Listening on 0.0.0.0:{0} ...", this.port);
+                Console.WriteLine("[INFO] Started Listener on Port {0} ...", port);
 
                 while (true)
                 {
                     Server.allDone.Reset();
-                    listener.BeginAccept(new AsyncCallback(Server.AcceptCallback), listener);
-                    Server.allDone.WaitOne();
+                    listener.BeginAccept(new AsyncCallback(AcceptCallback), listener);
+                    allDone.WaitOne();
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error: {0}", e.Message);
+                Console.WriteLine("[ERROR] {0}", e.Message);
             }
             Console.WriteLine("\nPress ENTER to continue...");
             Console.Read();
@@ -43,7 +43,7 @@ namespace coc_proxy_csharp
 
         public static void AcceptCallback(IAsyncResult ar)
         {
-            Server.allDone.Set();
+            allDone.Set();
             try
             {
                 Socket listener = (Socket)ar.AsyncState;
@@ -53,7 +53,7 @@ namespace coc_proxy_csharp
                 state.socket = socket;
                 state.serverKey = ServerCrypto.serverKey;
 
-                Console.WriteLine("Connection from {0} ...", socket.RemoteEndPoint.ToString());
+                Console.WriteLine("[INFO] Connection from {0} ...", socket.RemoteEndPoint.ToString());
 
                 Client client = new Client(state);
                 client.StartClient();
