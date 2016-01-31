@@ -10,9 +10,9 @@ namespace coc_proxy_csharp
 
         public Client(ServerState serverstate)
         {
-            this.state.serverState = serverstate;
-            this.state.clientKey = this.clientKey;
-            this.state.serverKey = ClientCrypto.serverKey;
+            state.serverState = serverstate;
+            state.clientKey = clientKey;
+            state.serverKey = ClientCrypto.serverKey;
         }
 
         public void StartClient()
@@ -28,7 +28,7 @@ namespace coc_proxy_csharp
                 socket.Connect(remoteEndPoint);
                 socket.BeginReceive(this.state.buffer, 0, State.BufferSize, 0, new AsyncCallback(Protocol.ReceiveCallback), this.state);
 
-                Console.WriteLine("Connected to {0} ...", socket.RemoteEndPoint.ToString());
+                Console.WriteLine("[INFO] Connected to {0} ...", socket.RemoteEndPoint.ToString());
             }
             catch (Exception e)
             {

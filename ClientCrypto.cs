@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net.Sockets;
 using Sodium;
+using CocProxy;
 
 namespace coc_proxy_csharp
 {
@@ -35,7 +36,7 @@ namespace coc_proxy_csharp
                 state.serverState.nonce = Utilities.Increment(Utilities.Increment(state.serverState.nonce));
                 plainText = SecretBox.Open(new byte[16].Concat(cipherText).ToArray(), state.serverState.nonce, state.serverState.sharedKey);
             }
-            Console.WriteLine("{0} {1}", messageId, Utilities.BinaryToHex(BitConverter.GetBytes(messageId).Reverse().Skip(2).Concat(BitConverter.GetBytes(plainText.Length).Reverse().Skip(1)).Concat(BitConverter.GetBytes(unknown).Reverse().Skip(2)).Concat(plainText).ToArray()));
+            Console.WriteLine("[SERVER]{0} "+Environment.NewLine+"{1}", PacketInfos.GetPacketName(messageId), Utilities.BinaryToHex(packet.Take(7).ToArray()) + Utilities.BinaryToHex(plainText));
             ServerCrypto.EncryptPacket(state.serverState.socket, state.serverState, messageId, unknown, plainText);
         }
 

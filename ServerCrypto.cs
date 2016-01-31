@@ -2,12 +2,13 @@
 using System.Net.Sockets;
 using System.Linq;
 using Sodium;
+using CocProxy;
 
 namespace coc_proxy_csharp
 {
     public class ServerCrypto : Protocol
     {
-        protected static KeyPair serverKey = PublicKeyBox.GenerateKeyPair(Utilities.HexToBinary("1891d401fadb51d25d3a9174d472a9f691a45b974285d47729c45c6538070d85"));
+        protected static KeyPair serverKey = PublicKeyBox.GenerateKeyPair(Utilities.HexToBinary("AC1B01242BBD3A8AEE5ED686D82802348EF396B3774EEC078B4A27169A0730A7"));
 
         public static void DecryptPacket(Socket socket, ServerState state, byte[] packet)
         {
@@ -36,7 +37,7 @@ namespace coc_proxy_csharp
                 state.clientState.nonce = Utilities.Increment(Utilities.Increment(state.clientState.nonce));
                 plainText = SecretBox.Open(new byte[16].Concat(cipherText).ToArray(), state.clientState.nonce, state.sharedKey);
             }
-            Console.WriteLine("{0} {1}", messageId, Utilities.BinaryToHex(BitConverter.GetBytes(messageId).Reverse().Skip(2).Concat(BitConverter.GetBytes(plainText.Length).Reverse().Skip(1)).Concat(BitConverter.GetBytes(unknown).Reverse().Skip(2)).Concat(plainText).ToArray()));
+            Console.WriteLine("[CLIENT] {0}"+Environment.NewLine +"{1}", PacketInfos.GetPacketName(messageId), Utilities.BinaryToHex(packet.Take(7).ToArray()) + Utilities.BinaryToHex(plainText));
             ClientCrypto.EncryptPacket(state.clientState.socket, state.clientState, messageId, unknown, plainText);
         }
 
