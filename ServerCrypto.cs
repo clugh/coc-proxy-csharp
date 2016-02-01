@@ -53,7 +53,7 @@ namespace coc_proxy_csharp
         public static void EncryptPacket(Socket socket, ServerState state, int messageId, int unknown, byte[] plainText)
         {
             byte[] cipherText;
-            if (messageId == 20100)
+            if (messageId == 20100 || (messageId == 20103 && state.sharedKey == null))
             {
                 cipherText = plainText;
             }
