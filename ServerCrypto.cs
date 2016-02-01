@@ -57,7 +57,7 @@ namespace coc_proxy_csharp
             {
                 cipherText = plainText;
             }
-            else if (messageId == 20104)
+            else if (messageId == 20103 || messageId == 20104)
             {
                 byte[] nonce = GenericHash.Hash(state.clientState.nonce.Concat(state.clientKey).Concat(state.serverKey.PublicKey).ToArray(), null, 24);
                 plainText = state.nonce.Concat(state.sharedKey).Concat(plainText).ToArray();

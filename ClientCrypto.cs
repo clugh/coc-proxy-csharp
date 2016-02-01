@@ -19,11 +19,11 @@ namespace coc_proxy_csharp
             byte[] cipherText = packet.Skip(2).Skip(3).Skip(2).ToArray();
             byte[] plainText;
 
-            if (messageId == 20100)
+            if (messageId == 20100 || (messageId == 20103 && state.serverState.sharedKey == null))
             {
                 plainText = cipherText;
             }
-            else if (messageId == 20104)
+            else if (messageId == 20103 || messageId == 20104)
             {
                 byte[] nonce = GenericHash.Hash(state.nonce.Concat(state.clientKey.PublicKey).Concat(state.serverKey).ToArray(), null, 24);
                 plainText = PublicKeyBox.Open(cipherText, nonce, state.clientKey.PrivateKey, state.serverKey);
